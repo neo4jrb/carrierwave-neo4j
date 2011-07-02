@@ -1,0 +1,19 @@
+= CarrierWave for Neo4j
+
+This gem adds support for Neo4j to CarrierWave, see the CarrierWave documentation for more detailed usage instructions.
+
+== Installation Instructions
+
+    gem install carrierwave-neo4j
+
+Use it like this:
+
+    require "carrierwave/neo4j"
+
+Using bundler:
+
+    gem "carrierwave-neo4j", :require => "carrierwave/neo4j"
+
+== TODO
+
+Add support for CarrierWave validations.
