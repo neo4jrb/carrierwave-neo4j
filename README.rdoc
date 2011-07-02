@@ -13,7 +13,3 @@ Use it like this:
 Using bundler:
 
     gem "carrierwave-neo4j", :require => "carrierwave/neo4j"
-
-== TODO
-
-Add support for CarrierWave validations.
