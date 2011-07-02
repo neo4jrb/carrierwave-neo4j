@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.platform    = "java"
   s.authors     = ["Rodrigo Navarro"]
   s.email       = ["navarro@manapot.com.br"]
-  s.homepage    = ""
+  s.homepage    = "https://github.com/reu/carrierwave-neo4j"
   s.summary     = %q{Neo4j support for Carrierwave}
   s.description = %q{Neo4j support for Carrierwave}
 
