@@ -14,6 +14,20 @@ end
 
 class DefaultUploader < CarrierWave::Uploader::Base; end
 
+class PngUploader < CarrierWave::Uploader::Base
+  def extension_white_list
+    %w(png)
+  end
+end
+
+class ProcessingErrorUploader < CarrierWave::Uploader::Base
+  process :end_on_an_era
+
+  def end_on_an_era
+    raise CarrierWave::ProcessingError, "Bye Tarja"
+  end
+end
+
 describe CarrierWave::Neo4j do
   let(:user_class) { reset_class }
   let(:user) { user_class.new }
@@ -70,6 +84,26 @@ describe CarrierWave::Neo4j do
       subject { record }
 
       its(:image) { should be_blank }
+    end
+
+    context "when validating integrity" do
+      subject do
+        user = reset_class(PngUploader).new
+        user.image = File.open(file_path("tarja.jpg"))
+        user
+      end
+
+      it { should_not be_valid }
+    end
+
+    context "when validating processing" do
+      subject do
+        user = reset_class(ProcessingErrorUploader).new
+        user.image = File.open(file_path("tarja.jpg"))
+        user
+      end
+
+      it { should_not be_valid }
     end
   end
 
