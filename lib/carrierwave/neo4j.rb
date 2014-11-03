@@ -37,4 +37,4 @@ module CarrierWave
   end
 end
 
-Neo4j::Rails::Model.extend CarrierWave::Neo4j
+Neo4j::ActiveNode.extend CarrierWave::Neo4j
