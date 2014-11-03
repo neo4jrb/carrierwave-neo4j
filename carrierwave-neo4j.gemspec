@@ -5,7 +5,6 @@ require "carrierwave/neo4j/version"
 Gem::Specification.new do |s|
   s.name        = "carrierwave-neo4j"
   s.version     = CarrierWave::Neo4j::VERSION
-  s.platform    = "java"
   s.authors     = ["Rodrigo Navarro"]
   s.email       = ["navarro@manapot.com.br"]
   s.homepage    = "https://github.com/reu/carrierwave-neo4j"
