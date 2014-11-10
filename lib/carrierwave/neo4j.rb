@@ -36,5 +36,3 @@ module CarrierWave
     end
   end
 end
-
-Neo4j::ActiveNode.extend CarrierWave::Neo4j
