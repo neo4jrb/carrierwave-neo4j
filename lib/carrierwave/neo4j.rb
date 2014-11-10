@@ -15,8 +15,8 @@ module CarrierWave
 
       super
 
-      alias_method :read_uploader, :read_attribute
-      alias_method :write_uploader, :write_attribute
+      alias_method :read_uploader,  :attribute
+      alias_method :write_uploader, :attribute=
 
       include CarrierWave::Validations::ActiveModel
 
