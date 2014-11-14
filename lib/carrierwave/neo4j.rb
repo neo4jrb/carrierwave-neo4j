@@ -15,9 +15,6 @@ module CarrierWave
 
       super
 
-      alias_method :read_uploader,  :attribute
-      alias_method :write_uploader, :attribute=
-
       include CarrierWave::Validations::ActiveModel
 
       validates_integrity_of  column if uploader_option(column.to_sym, :validate_integrity)
@@ -28,11 +25,27 @@ module CarrierWave
       after_destroy :"remove_#{column}!"
 
       class_eval <<-RUBY, __FILE__, __LINE__+1
+        def #{column}=(new_file)
+          column = _mounter(:#{column}).serialization_column
+          send(:attribute_will_change!, :#{column})
+          super
+        end
+
         def _mounter(column)
           @_mounters ||= {}
           @_mounters[column] ||= CarrierWave::Mount::Mounter.new(self, column)
+        end
+
+        def read_uploader(name)
+          send(:attribute, name.to_s)
+        end
+
+        def write_uploader(name, value)
+          send(:attribute=, name.to_s, value)
         end
       RUBY
     end
   end
 end
+
+Neo4j::ActiveNode.extend CarrierWave::Neo4j
