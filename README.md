@@ -1,6 +1,6 @@
 ## CarrierWave for Neo4j
 
-This gem adds support for Neo4j to CarrierWave, see the CarrierWave documentation for more detailed usage instructions.
+This gem adds support for Neo4j 3.0+ to CarrierWave, see the CarrierWave documentation for more detailed usage instructions.
 
 ### Installation Instructions
 
