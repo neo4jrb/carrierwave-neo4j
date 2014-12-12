@@ -2,6 +2,7 @@ require "carrierwave/neo4j/version"
 require "neo4j"
 require "carrierwave"
 require "carrierwave/validations/active_model"
+require "carrierwave/neo4j/uploader_converter"
 
 module CarrierWave
   module Neo4j
@@ -11,9 +12,9 @@ module CarrierWave
     # See +CarrierWave::Mount#mount_uploader+ for documentation
     #
     def mount_uploader(column, uploader = nil, options = {}, &block)
-      property column
-
       super
+
+      serialize column, ::CarrierWave::Uploader::Base
 
       include CarrierWave::Validations::ActiveModel
 
@@ -42,6 +43,13 @@ module CarrierWave
 
         def write_uploader(name, value)
           send(:attribute=, name.to_s, value)
+        end
+
+        def reload_from_database
+          if reloaded = self.class.load_entity(neo_id)
+            send(:attributes=, reloaded.attributes.reject{ |k,v| v.is_a?(::CarrierWave::Uploader::Base) })
+          end
+          reloaded
         end
       RUBY
     end
