@@ -3,29 +3,32 @@ require "neo4j"
 require "carrierwave"
 require "carrierwave/validations/active_model"
 require "carrierwave/neo4j/uploader_converter"
+require "active_support/concern"
 
 module CarrierWave
   module Neo4j
-    include CarrierWave::Mount
+    extend ActiveSupport::Concern
 
-    ##
-    # See +CarrierWave::Mount#mount_uploader+ for documentation
-    #
-    def mount_uploader(column, uploader = nil, options = {}, &block)
-      super
+    module ClassMethods
+      include CarrierWave::Mount
+      ##
+      # See +CarrierWave::Mount#mount_uploader+ for documentation
+      #
+      def mount_uploader(column, uploader = nil, options = {}, &block)
+        super
 
-      serialize column, ::CarrierWave::Uploader::Base
+        serialize column, ::CarrierWave::Uploader::Base
 
-      include CarrierWave::Validations::ActiveModel
+        include CarrierWave::Validations::ActiveModel
 
-      validates_integrity_of  column if uploader_option(column.to_sym, :validate_integrity)
-      validates_processing_of column if uploader_option(column.to_sym, :validate_processing)
+        validates_integrity_of  column if uploader_option(column.to_sym, :validate_integrity)
+        validates_processing_of column if uploader_option(column.to_sym, :validate_processing)
 
-      after_save :"store_#{column}!"
-      before_save :"write_#{column}_identifier"
-      after_destroy :"remove_#{column}!"
+        after_save :"store_#{column}!"
+        before_save :"write_#{column}_identifier"
+        after_destroy :"remove_#{column}!"
 
-      class_eval <<-RUBY, __FILE__, __LINE__+1
+        class_eval <<-RUBY, __FILE__, __LINE__+1
         def #{column}=(new_file)
           column = _mounter(:#{column}).serialization_column
           send(:attribute_will_change!, :#{column})
@@ -51,9 +54,11 @@ module CarrierWave
           end
           reloaded
         end
-      RUBY
+        RUBY
+      end
     end
+
   end
 end
 
-Neo4j::ActiveNode.extend CarrierWave::Neo4j
+Neo4j::ActiveNode.send :include, CarrierWave::Neo4j

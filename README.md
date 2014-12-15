@@ -14,7 +14,6 @@ Use it like this:
 ```ruby
 class Asset
   include Neo4j::ActiveNode
-  extend CarrierWave::Neo4j
 
   property :attachment, type: String
   mount_uploader :attachment, AttachmentUploader
