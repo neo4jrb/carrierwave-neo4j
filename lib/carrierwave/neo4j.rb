@@ -35,6 +35,18 @@ module CarrierWave
           super
         end
 
+        def remote_#{column}_url=(url)
+          column = _mounter(:#{column}).serialization_column
+          send(:attribute_will_change!, :#{column})
+          super
+        end
+
+        def remove_#{column}!
+          super
+          _mounter(:#{column}).remove = true
+          _mounter(:#{column}).write_identifier
+        end
+
         def _mounter(column)
           @_mounters ||= {}
           @_mounters[column] ||= CarrierWave::Mount::Mounter.new(self, column)
