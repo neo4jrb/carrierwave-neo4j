@@ -1,15 +1,15 @@
 require "spec_helper"
 
 def reset_class(uploader = DefaultUploader)
-  class_name = "User"
-  Object.send(:remove_const, class_name) rescue nil
-  user_class = Object.const_set(class_name, Class.new(Neo4j::Rails::Model))
-
-  user_class.class_eval do
+  User.class_eval do
     mount_uploader :image, uploader
   end
+  User
+end
 
-  user_class
+class User
+  include Neo4j::ActiveNode
+  property :image, type: String
 end
 
 class DefaultUploader < CarrierWave::Uploader::Base; end
@@ -29,7 +29,9 @@ class ProcessingErrorUploader < CarrierWave::Uploader::Base
 end
 
 describe CarrierWave::Neo4j do
-  let(:user_class) { reset_class }
+  let(:user_class)       { reset_class }
+  let(:user_class_png)   { reset_class(PngUploader) }
+  let(:user_class_error) { reset_class(ProcessingErrorUploader) }
   let(:user) { user_class.new }
 
   after do
@@ -71,14 +73,12 @@ describe CarrierWave::Neo4j do
       let(:record) { user_class.new }
 
       before do
-        Neo4j::Transaction.run do
-          record.image = File.open(file_path("tarja.jpg"))
-          record.save
+        record.image = File.open(file_path("tarja.jpg"))
+        record.save
 
-          record.remove_image = true
-          record.save # Getting NotInTransactionException here if not wrapped in a transaction block, maybe Neo4j bug?
-          record.reload
-        end
+        record.remove_image = true
+        record.save
+        record.reload
       end
 
       subject { record }
@@ -88,7 +88,7 @@ describe CarrierWave::Neo4j do
 
     context "when validating integrity" do
       subject do
-        user = reset_class(PngUploader).new
+        user = user_class_png.new
         user.image = File.open(file_path("tarja.jpg"))
         user
       end
@@ -98,7 +98,7 @@ describe CarrierWave::Neo4j do
 
     context "when validating processing" do
       subject do
-        user = reset_class(ProcessingErrorUploader).new
+        user = user_class_error.new
         user.image = File.open(file_path("tarja.jpg"))
         user
       end

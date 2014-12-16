@@ -43,8 +43,7 @@ module CarrierWave
 
         def remove_#{column}!
           super
-          _mounter(:#{column}).remove = true
-          _mounter(:#{column}).write_identifier
+          write_uploader(_mounter(:#{column}).serialization_column, nil)
         end
 
         def _mounter(column)
