@@ -3,3 +3,6 @@
 Gemfile.lock
 pkg/*
 db/*
+.idea
+
+.ruby-version

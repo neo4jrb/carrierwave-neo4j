@@ -2,39 +2,74 @@ require "carrierwave/neo4j/version"
 require "neo4j"
 require "carrierwave"
 require "carrierwave/validations/active_model"
+require "carrierwave/neo4j/uploader_converter"
+require "active_support/concern"
 
 module CarrierWave
   module Neo4j
-    include CarrierWave::Mount
+    extend ActiveSupport::Concern
 
-    ##
-    # See +CarrierWave::Mount#mount_uploader+ for documentation
-    #
-    def mount_uploader(column, uploader = nil, options = {}, &block)
-      property column
+    module ClassMethods
+      include CarrierWave::Mount
+      ##
+      # See +CarrierWave::Mount#mount_uploader+ for documentation
+      #
+      def mount_uploader(column, uploader = nil, options = {}, &block)
+        super
 
-      super
+        serialize column, ::CarrierWave::Uploader::Base
 
-      alias_method :read_uploader, :read_attribute
-      alias_method :write_uploader, :write_attribute
+        include CarrierWave::Validations::ActiveModel
 
-      include CarrierWave::Validations::ActiveModel
+        validates_integrity_of  column if uploader_option(column.to_sym, :validate_integrity)
+        validates_processing_of column if uploader_option(column.to_sym, :validate_processing)
 
-      validates_integrity_of  column if uploader_option(column.to_sym, :validate_integrity)
-      validates_processing_of column if uploader_option(column.to_sym, :validate_processing)
+        after_save :"store_#{column}!"
+        before_save :"write_#{column}_identifier"
+        after_destroy :"remove_#{column}!"
 
-      after_save :"store_#{column}!"
-      before_save :"write_#{column}_identifier"
-      after_destroy :"remove_#{column}!"
+        class_eval <<-RUBY, __FILE__, __LINE__+1
+        def #{column}=(new_file)
+          column = _mounter(:#{column}).serialization_column
+          send(:attribute_will_change!, :#{column})
+          super
+        end
 
-      class_eval <<-RUBY, __FILE__, __LINE__+1
+        def remote_#{column}_url=(url)
+          column = _mounter(:#{column}).serialization_column
+          send(:attribute_will_change!, :#{column})
+          super
+        end
+
+        def remove_#{column}!
+          super
+          write_uploader(_mounter(:#{column}).serialization_column, nil)
+        end
+
         def _mounter(column)
           @_mounters ||= {}
           @_mounters[column] ||= CarrierWave::Mount::Mounter.new(self, column)
         end
-      RUBY
+
+        def read_uploader(name)
+          send(:attribute, name.to_s)
+        end
+
+        def write_uploader(name, value)
+          send(:attribute=, name.to_s, value)
+        end
+
+        def reload_from_database
+          if reloaded = self.class.load_entity(neo_id)
+            send(:attributes=, reloaded.attributes.reject{ |k,v| v.is_a?(::CarrierWave::Uploader::Base) })
+          end
+          reloaded
+        end
+        RUBY
+      end
     end
+
   end
 end
 
-Neo4j::Rails::Model.extend CarrierWave::Neo4j
+Neo4j::ActiveNode.send :include, CarrierWave::Neo4j
