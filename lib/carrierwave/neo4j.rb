@@ -26,6 +26,7 @@ module CarrierWave
 
         after_save :"store_#{column}!"
         before_save :"write_#{column}_identifier"
+        before_destroy :"clear_#{column}"
         after_destroy :"remove_#{column}!"
 
         class_eval <<-RUBY, __FILE__, __LINE__+1
@@ -41,8 +42,7 @@ module CarrierWave
           super
         end
 
-        def remove_#{column}!
-          super
+        def clear_#{column}
           write_uploader(_mounter(:#{column}).serialization_column, nil)
         end
 
