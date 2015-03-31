@@ -1,6 +1,7 @@
 require "rubygems"
 require "bundler/setup"
 require "rspec"
+require "rspec/its"
 
 require "carrierwave"
 require "carrierwave/neo4j"

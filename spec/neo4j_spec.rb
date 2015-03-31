@@ -116,8 +116,9 @@ describe CarrierWave::Neo4j do
     end
 
     it "also destroys the image" do
+      file_path = record.image.path
       expect { record.destroy }.to change {
-        File.exist? public_path("uploads/tarja.jpg")
+        File.exist? file_path
       }.from(true).to(false)
     end
   end
