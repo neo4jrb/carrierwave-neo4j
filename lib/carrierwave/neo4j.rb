@@ -48,7 +48,8 @@ module CarrierWave
 
         def _mounter(column)
           @_mounters ||= {}
-          @_mounters[column] ||= CarrierWave::Mounter.new(self, column)
+          mounter_class = defined?(CarrierWave::Mounter) ? CarrierWave::Mounter : CarrierWave::Mount::Mounter
+          @_mounters[column] ||= mounter_class.new(self, column)
         end
 
         def read_uploader(name)
