@@ -20,6 +20,6 @@ Gem::Specification.new do |s|
 
   s.add_dependency("activesupport", ">= 3.0" )
   s.add_dependency("neo4j", ">= 3.0.0")
-  s.add_dependency("carrierwave", "~> 0.5")
+  s.add_dependency("carrierwave", ">= 0.5")
   s.add_development_dependency("rspec", "~> 2.0")
 end
