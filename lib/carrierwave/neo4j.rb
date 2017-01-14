@@ -46,11 +46,6 @@ module CarrierWave
           write_uploader(_mounter(:#{column}).serialization_column, nil)
         end
 
-        def _mounter(column)
-          @_mounters ||= {}
-          @_mounters[column] ||= CarrierWave::Mount::Mounter.new(self, column)
-        end
-
         def read_uploader(name)
           send(:attribute, name.to_s)
         end
