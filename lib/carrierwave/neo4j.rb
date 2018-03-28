@@ -60,6 +60,17 @@ module CarrierWave
           end
           reloaded
         end
+
+        after_initialize :_set_uploaders_nil
+
+        unless method_defined?(:_set_uploaders_nil)
+          def _set_uploaders_nil
+            puts "mounters: #{@_mounters}"
+            @_mounters.each do |_, mounter|
+              mounter.instance_variable_set(:@uploaders, nil)
+            end
+          end
+        end
         RUBY
       end
     end
