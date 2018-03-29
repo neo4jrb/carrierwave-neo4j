@@ -61,9 +61,14 @@ module CarrierWave
           reloaded
         end
 
-        after_initialize :_set_uploaders_nil
-
+        # carrierwave keeps a instance variable of @uploaders, cached at init time
+        # but at init time, the value of the column is not yet available
+        # so after init, the empty @uploaders cache must be invalidated
+        # it will reinitialized with the processed column value on first access
         unless method_defined?(:_set_uploaders_nil)
+
+          after_initialize :_set_uploaders_nil
+
           def _set_uploaders_nil
             @_mounters.each do |_, mounter|
               mounter.instance_variable_set(:@uploaders, nil)
