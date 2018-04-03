@@ -70,8 +70,10 @@ module CarrierWave
           after_initialize :_set_uploaders_nil
 
           def _set_uploaders_nil
-            @_mounters.each do |_, mounter|
-              mounter.instance_variable_set(:@uploaders, nil)
+            if @_mounters
+              @_mounters.each do |_, mounter|
+                mounter.instance_variable_set(:@uploaders, nil)
+              end
             end
           end
         end
