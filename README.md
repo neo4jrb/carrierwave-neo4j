@@ -19,3 +19,10 @@ class Asset
   mount_uploader :attachment, AttachmentUploader
 end
 ```
+
+### Development
+
+```sh
+bundle install
+rake spec
+```
