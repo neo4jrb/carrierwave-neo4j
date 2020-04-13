@@ -20,7 +20,8 @@ class DirtyCleaner
   end
 
   def clean_fs
-    `find spec/public/uploads -name "*.jpg" -exec rm -f {} \;`
+    FileUtils.rm_rf("spec/public/uploads/*.jpg")
+    FileUtils.rm_rf("spec/public/uploads/tmp/")
   end
 
   def avoid_validation

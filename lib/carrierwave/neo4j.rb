@@ -23,11 +23,18 @@ module CarrierWave
 
         validates_integrity_of  column if uploader_option(column.to_sym, :validate_integrity)
         validates_processing_of column if uploader_option(column.to_sym, :validate_processing)
+        # TODO: add this -sd
+        # validates_processing_of column if uploader_option(column.to_sym, :validate_download)
 
-        after_save :"store_#{column}!"
         before_save :"write_#{column}_identifier"
-        before_destroy :"clear_#{column}"
-        after_destroy :"remove_#{column}!"
+        after_save :"store_#{column}!"
+        after_destroy_commit :"remove_#{column}!"
+
+        # TODO: these come next; write tests first
+        # after_update_commit :"mark_remove_#{column}_false"
+        # after_update_commit :"remove_previously_stored_#{column}"
+        # after_update_commit :"store_#{column}!"
+        # after_create_commit :"store_#{column}!"
 
         class_eval <<-RUBY, __FILE__, __LINE__+1
         def #{column}=(new_file)

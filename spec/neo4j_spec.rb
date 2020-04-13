@@ -115,11 +115,11 @@ describe CarrierWave::Neo4j do
       record.save
     end
 
-    # it "also destroys the image" do
-    #   file_path = record.image.path
-    #   expect { record.destroy }.to change {
-    #     File.exist? file_path
-    #   }.from(true).to(false)
-    # end
+    it "also destroys the image" do
+      file_path = record.image.path
+      expect { record.destroy }.to change {
+        File.exist? file_path
+      }.from(true).to(false)
+    end
   end
 end
