@@ -46,8 +46,8 @@ describe CarrierWave::Neo4j do
   end
 
   describe "#image" do
-    let(:record) { user_class.new }
-    subject { record.image }
+    let(:user) { user_class.new }
+    subject { user.image }
 
     context "when nothing is assigned" do
       it { should be_blank }
@@ -55,9 +55,9 @@ describe CarrierWave::Neo4j do
 
     context "when an empty string is assigned" do
       before do
-        record.image = ""
-        record.save
-        record.reload
+        user.image = ""
+        user.save
+        user.reload
       end
 
       it { should be_blank }
@@ -65,9 +65,9 @@ describe CarrierWave::Neo4j do
 
     context "when a filename is stored" do
       before do
-        record.image = File.open(file_path("ong.jpg"))
-        record.save
-        record.reload
+        user.image = File.open(file_path("ong.jpg"))
+        user.save
+        user.reload
       end
 
       it { should be_an_instance_of DefaultUploader }
@@ -77,18 +77,18 @@ describe CarrierWave::Neo4j do
 
   describe "#save" do
     context "when remove_image? is true" do
-      let(:record) { user_class.new }
+      let(:user) { user_class.new }
 
       before do
-        record.image = File.open(file_path("ong.jpg"))
-        record.save
+        user.image = File.open(file_path("ong.jpg"))
+        user.save
 
-        record.remove_image = true
-        record.save
-        record.reload
+        user.remove_image = true
+        user.save
+        user.reload
       end
 
-      subject { record }
+      subject { user }
 
       its(:image) { should be_blank }
     end
