@@ -73,6 +73,19 @@ describe CarrierWave::Neo4j do
       it { should be_an_instance_of DefaultUploader }
       its(:current_path) { should == public_path("uploads/ong.jpg") }
     end
+
+    context "when a model is retrieved from the db" do
+      before do
+        user.image = File.open(file_path("ong.jpg"))
+        user.save
+        @found = user_class.find_by_id(user.uuid)
+      end
+
+      subject { @found.image }
+
+      it { should be_an_instance_of DefaultUploader }
+      its(:current_path) { should == public_path("uploads/ong.jpg") }
+    end
   end
 
   describe "#save" do
