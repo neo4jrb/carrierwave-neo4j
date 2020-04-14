@@ -23,8 +23,7 @@ module CarrierWave
 
         validates_integrity_of  column if uploader_option(column.to_sym, :validate_integrity)
         validates_processing_of column if uploader_option(column.to_sym, :validate_processing)
-        # TODO: add this -sd
-        # validates_processing_of column if uploader_option(column.to_sym, :validate_download)
+        validates_download_of column if uploader_option(column.to_sym, :validate_download)
 
         before_save :"write_#{column}_identifier"
         after_save :"store_#{column}!"

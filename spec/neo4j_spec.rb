@@ -28,10 +28,17 @@ class ProcessingErrorUploader < CarrierWave::Uploader::Base
   end
 end
 
+class DownloadErrorUploader < CarrierWave::Uploader::Base
+  def download!(file, headers = {})
+    raise CarrierWave::DownloadError
+  end
+end
+
 describe CarrierWave::Neo4j do
-  let(:user_class)       { reset_class }
-  let(:user_class_png)   { reset_class(PngUploader) }
-  let(:user_class_error) { reset_class(ProcessingErrorUploader) }
+  let(:user_class)          { reset_class }
+  let(:user_class_png)      { reset_class(PngUploader) }
+  let(:user_class_error)    { reset_class(ProcessingErrorUploader) }
+  let(:user_download_error) { reset_class(DownloadErrorUploader) }
   let(:user) { user_class.new }
 
   after do
@@ -100,6 +107,16 @@ describe CarrierWave::Neo4j do
       subject do
         user = user_class_error.new
         user.image = File.open(file_path("tarja.jpg"))
+        user
+      end
+
+      it { should_not be_valid }
+    end
+
+    context 'when validating download' do
+      subject do
+        user = user_download_error.new
+        user.remote_image_url = 'http://www.example.com/missing.jpg'
         user
       end
 
