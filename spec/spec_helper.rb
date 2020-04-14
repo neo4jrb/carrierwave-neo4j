@@ -20,6 +20,10 @@ def public_path(*paths)
   File.expand_path(File.join(File.dirname(__FILE__), "public", *paths))
 end
 
+def tmp_path( *paths )
+  File.expand_path(File.join(File.dirname(__FILE__), 'public/uploads/tmp', *paths))
+end
+
 CarrierWave.root = public_path
 # DatabaseCleaner[:neo4j, connection: {type: :bolt, path: 'bolt://localhost:7003'}].strategy = :transaction
 

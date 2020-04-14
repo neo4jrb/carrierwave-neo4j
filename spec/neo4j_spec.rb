@@ -24,7 +24,7 @@ class ProcessingErrorUploader < CarrierWave::Uploader::Base
   process :end_on_an_era
 
   def end_on_an_era
-    raise CarrierWave::ProcessingError, "Bye Tarja"
+    raise CarrierWave::ProcessingError, "Bye OngDB"
   end
 end
 
@@ -65,13 +65,13 @@ describe CarrierWave::Neo4j do
 
     context "when a filename is stored" do
       before do
-        record.image = File.open(file_path("tarja.jpg"))
+        record.image = File.open(file_path("ong.jpg"))
         record.save
         record.reload
       end
 
       it { should be_an_instance_of DefaultUploader }
-      its(:current_path) { should == public_path("uploads/tarja.jpg") }
+      its(:current_path) { should == public_path("uploads/ong.jpg") }
     end
   end
 
@@ -80,7 +80,7 @@ describe CarrierWave::Neo4j do
       let(:record) { user_class.new }
 
       before do
-        record.image = File.open(file_path("tarja.jpg"))
+        record.image = File.open(file_path("ong.jpg"))
         record.save
 
         record.remove_image = true
@@ -96,7 +96,7 @@ describe CarrierWave::Neo4j do
     context "when validating integrity" do
       subject do
         user = user_class_png.new
-        user.image = File.open(file_path("tarja.jpg"))
+        user.image = File.open(file_path("ong.jpg"))
         user
       end
 
@@ -106,7 +106,7 @@ describe CarrierWave::Neo4j do
     context "when validating processing" do
       subject do
         user = user_class_error.new
-        user.image = File.open(file_path("tarja.jpg"))
+        user.image = File.open(file_path("ong.jpg"))
         user
       end
 
@@ -124,17 +124,31 @@ describe CarrierWave::Neo4j do
     end
   end
 
+  # describe "#update" do
+  #   let(:user) { user_class.new }
+
+  #   before do
+  #     user.image = File.open(file_path("ong.jpg"))
+  #     user.save
+  #   end
+
+  #   it "does not flag the uploader for removal" do
+  #     user.image = File.open(file_path("neo4j.png"))
+  #   end
+  # end
+
   describe "#destroy" do
-    let(:record) { user_class.new }
+    let(:user) { user_class.new }
 
     before do
-      record.image = File.open(file_path("tarja.jpg"))
-      record.save
+      user.image = File.open(file_path("ong.jpg"))
+      user.save
     end
 
     it "also destroys the image" do
-      file_path = record.image.path
-      expect { record.destroy }.to change {
+      file_path = user.image.path
+      expect(user.image.current_path).to eq public_path('uploads/ong.jpg')
+      expect { user.destroy }.to change {
         File.exist? file_path
       }.from(true).to(false)
     end

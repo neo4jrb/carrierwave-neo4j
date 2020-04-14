@@ -5,6 +5,13 @@ require "carrierwave/validations/active_model"
 require "carrierwave/neo4j/uploader_converter"
 require "active_support/concern"
 
+######
+# This file attempts to maintain symmetry with:
+# https://github.com/carrierwaveuploader/carrierwave/blob/master/lib/carrierwave/orm/activerecord.rb
+# 
+# Behaviours linked to callbacks (ex. `after_save :"store_#{column}!"`) belong to:
+# https://github.com/carrierwaveuploader/carrierwave/blob/master/lib/carrierwave/mount.rb
+######
 module CarrierWave
   module Neo4j
     extend ActiveSupport::Concern
