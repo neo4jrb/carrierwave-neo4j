@@ -12,7 +12,11 @@ class User
   property :image, type: String
 end
 
-class DefaultUploader < CarrierWave::Uploader::Base; end
+class DefaultUploader < CarrierWave::Uploader::Base
+  # def store_dir
+  #   "uploads/#{model.class.to_s.underscore}/#{mounted_as}/#{model.id}"
+  # end
+end
 
 class PngUploader < CarrierWave::Uploader::Base
   def extension_whitelist
@@ -78,12 +82,17 @@ describe CarrierWave::Neo4j do
       before do
         user.image = File.open(file_path("ong.jpg"))
         user.save
-        @found = user_class.find_by_id(user.uuid)
+        @found = user_class.find(user.uuid)
       end
 
       subject { @found.image }
 
+      it "has a basic identifier" do
+        expect(@found.image_identifier).to eq "ong.jpg"
+      end
+
       it { should be_an_instance_of DefaultUploader }
+      its(:url) { should == "/uploads/ong.jpg"}
       its(:current_path) { should == public_path("uploads/ong.jpg") }
     end
   end
