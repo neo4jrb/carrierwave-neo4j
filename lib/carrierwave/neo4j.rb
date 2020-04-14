@@ -11,6 +11,7 @@ require "active_support/concern"
 # 
 # Behaviours linked to callbacks (ex. `after_save :"store_#{column}!"`) belong to:
 # https://github.com/carrierwaveuploader/carrierwave/blob/master/lib/carrierwave/mount.rb
+# ...which is mixed into Model classes.
 ######
 module CarrierWave
   module Neo4j
@@ -34,13 +35,10 @@ module CarrierWave
 
         before_save :"write_#{column}_identifier"
         after_save :"store_#{column}!"
-        after_destroy_commit :"remove_#{column}!"
-
-        # TODO: these come next; write tests first
-        # after_update_commit :"mark_remove_#{column}_false"
-        # after_update_commit :"remove_previously_stored_#{column}"
-        # after_update_commit :"store_#{column}!"
-        # after_create_commit :"store_#{column}!"
+        # this `after_update` hook doesn't seem necessary, but please 
+        # don't remove it just in case it ever becomes necessary:
+        after_update :"mark_remove_#{column}_false"
+        after_destroy :"remove_#{column}!"
 
         class_eval <<-RUBY, __FILE__, __LINE__+1
         def #{column}=(new_file)

@@ -124,18 +124,27 @@ describe CarrierWave::Neo4j do
     end
   end
 
-  # describe "#update" do
-  #   let(:user) { user_class.new }
+  describe "#update" do
+    let(:user) { user_class.new }
 
-  #   before do
-  #     user.image = File.open(file_path("ong.jpg"))
-  #     user.save
-  #   end
+    before do
+      user.image = File.open(file_path("ong.jpg"))
+      user.save
+    end
 
-  #   it "does not flag the uploader for removal" do
-  #     user.image = File.open(file_path("neo4j.png"))
-  #   end
-  # end
+    it "does not flag the uploader for removal" do
+      user.image = File.open(file_path("neo4j.png"))
+      user.save
+      expect(user.remove_image?).to be_falsey
+    end
+
+    it "stores the updated file" do
+      user.image = File.open(file_path("neo4j.png"))
+      user.save
+      expect(user.image.current_path).to eq public_path('uploads/neo4j.png')
+      expect(user.image.url).to eq '/uploads/neo4j.png'
+    end
+  end
 
   describe "#destroy" do
     let(:user) { user_class.new }
