@@ -41,6 +41,8 @@ describe CarrierWave::Neo4j do
         expect(@user[:image]).to be_blank
         hash = JSON.parse(@user.to_json)
         expect(hash.keys).to include("user")
+        # ActiveRecord returns the user hash directly but Neo4j's `.to_json`
+        # requires that we select the user hash explicitly
         user_hash = hash["user"]
         expect(user_hash.keys).to include("image")
         expect(user_hash["image"].keys).to include("url")
@@ -51,10 +53,13 @@ describe CarrierWave::Neo4j do
         @user.image = File.open(file_path("ong.jpg"))
         @user.save!
         @user.reload
+        # again, ActiveRecord does not require the sub-select with `["user"]`
         expect(JSON.parse(@user.to_json)["user"]["image"]).to eq({"url" => "/uploads/ong.jpg"})
       end
 
       it "does not return anything when a stub image is assigned" do
+        # ActiveRecord does permit square bracket assignment to a column
+        # Neo4j does not
         @user[:image] = 'ong.jpg'
         @user.save!
         @user.reload
@@ -66,6 +71,20 @@ describe CarrierWave::Neo4j do
     end
 
     describe "#save" do
+      it "should do nothing when no file has been assigned" do
+        expect(@user.save).to be_truthy
+        expect(@user.image).to be_blank
+      end
+
+      it "should assign the filename to the database" do
+        @user.image = File.open(file_path("ong.jpg"))
+        expect(@user.save).to be_truthy
+        @user.reload
+        # under ActiveRecord these would be equal
+        expect(@user[:image]).not_to eq('ong.jpg')
+        expect(@user[:image].identifier).to eq('ong.jpg')
+        expect(@user.image_identifier).to eq('ong.jpg')
+      end
     end
 
     describe "#update" do
@@ -86,6 +105,7 @@ describe CarrierWave::Neo4j do
         @user.image = File.open(file_path("ong.jpg"))
         @user.save!
 
+        # ActiveRecord would respect `update_column`
         User.find(@user.id).update_column(:image, nil)
 
         expect(@user.reload.image).to be_present
@@ -96,5 +116,6 @@ describe CarrierWave::Neo4j do
 
     describe "#destroy" do
     end
+
   end
 end

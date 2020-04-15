@@ -5,9 +5,9 @@ require "rspec"
 require "rspec/its"
 
 require "neo4j"
-require 'neo4j/core/cypher_session/adaptors/bolt'
-require 'helpers/dirty_cleaner'
-require 'helpers/fake_migrations'
+require "neo4j/core/cypher_session/adaptors/bolt"
+require "helpers/dirty_cleaner"
+require "helpers/fake_migrations"
 
 require "carrierwave"
 require "carrierwave/neo4j"
