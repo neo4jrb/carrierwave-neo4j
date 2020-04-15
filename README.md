@@ -52,6 +52,19 @@ rake spec
 
 ### Troubleshooting
 
+#### Files are nil
+
+If you aren't getting your files back after querying a record from Neo4j, be aware that this will only happen automatically for the `Model#find` method. For all other finders (`#all`, `#first`, `#find_by`, `#find_by_*`, `#find_by_*!`, `#last`) you will need to force a reload so the model sees the file. For example:
+
+```ruby
+users = User.all
+users.each(&reload_from_database!)
+```
+
+Sorry, this sucks. But this is a limitation of Neo4j.rb as these other finders don't fire any callbacks.
+
+#### binstubs (particularly `bin/rspec`) seem broken
+
 If you're getting some infinite recursion when you run the specs that ultimately results in an error like:
 
 ```
