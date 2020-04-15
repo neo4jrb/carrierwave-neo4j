@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [3.0.0] - 2020-04-15
+
+### Fixed
+
+- Updated and fixed all tests to work with neo4j.rb 9.x and CarrierWave 2.x
+- Updated the overall format of the plugin to mirror CarrierWave::Orm::ActiveRecord as much as possible
+- Files are now deleted correctly on `#destroy`
+- File information is now correctly reloaded on `#find`
+
 ## [2.0.4] - 2018-04-03
 
 ### Fixed
