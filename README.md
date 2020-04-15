@@ -49,3 +49,18 @@ brew install imagemagick
 bundle install
 rake spec
 ```
+
+### Troubleshooting
+
+If you're getting some infinite recursion when you run the specs that ultimately results in an error like:
+
+```
+`ensure in require': CRITICAL: RUBYGEMS_ACTIVATION_MONITOR.owned?: before false -> after true (RuntimeError)
+```
+
+You may want to try:
+
+```sh
+rm .bundle/config
+bundle install
+```
