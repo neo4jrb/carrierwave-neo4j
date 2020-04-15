@@ -1,5 +1,9 @@
 require "spec_helper"
 
+# RealisticUploader and Book exist to provide a basic test harness with
+# standard Ruby code and no metaprogramming of any sort. Because that 
+# stuff is really hard to trust, even when you're sure you got it right.
+
 class RealisticUploader < CarrierWave::Uploader::Base
   include CarrierWave::MiniMagick
 
@@ -60,6 +64,14 @@ describe CarrierWave::Neo4j do
       it { should be_an_instance_of RealisticUploader }
       its(:url) { should == "/uploads/book/cover/#{book.id}/ong.jpg"}
       its(:current_path) { should == public_path("uploads/book/cover/#{book.id}/ong.jpg") }
+    end
+
+    context "with CarrierWave::MiniMagick" do
+      it "has width and height" do
+        book.cover = File.open(file_path("ong.jpg"))
+        expect(book.cover.width).to eq 273
+        expect(book.cover.height).to eq 273
+      end
     end
 
     # TODO: look over the AR specs -

@@ -20,6 +20,12 @@ class Asset
 end
 ```
 
+On Ubuntu:
+
+```sh
+sudo apt-get install imagemagick --fix-missing
+```
+
 ### Development
 
 ```sh
