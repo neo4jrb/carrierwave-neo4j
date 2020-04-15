@@ -3,6 +3,7 @@ require "bundler/setup"
 require "rake"
 require "rspec"
 require "rspec/its"
+require "webmock/rspec"
 
 require "neo4j"
 require "neo4j/core/cypher_session/adaptors/bolt"

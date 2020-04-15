@@ -48,7 +48,7 @@ describe CarrierWave::Neo4j do
       its(:current_path) { should == public_path("uploads/book/cover/#{book.id}/ong.jpg") }
     end
 
-    context "when a model is retrieved from the db" do
+    context "when a db lookup uses `#find`" do
       before do
         book.cover = File.open(file_path("ong.jpg"))
         book.save
@@ -66,6 +66,33 @@ describe CarrierWave::Neo4j do
       its(:current_path) { should == public_path("uploads/book/cover/#{book.id}/ong.jpg") }
     end
 
+    context "when a db look up does not use `#find`" do
+      before do
+        book.cover = File.open(file_path("ong.jpg"))
+        book.save
+        @found = Book.find_by_id(book.id)
+      end
+
+      it "has a basic identifier" do
+        expect(@found.cover_identifier).to eq "ong.jpg"
+      end
+
+      subject { @found.cover }
+
+      # There is no way around this. `#url` and `#current_path` depend on the 
+      # retrieval of the file from the store but there the only callback 
+      # available is `:after_find` which does not fire on `#find_by` queries.
+      it { should be_an_instance_of RealisticUploader }
+      its(:url) { should be_nil }
+      its(:current_path) { should be_nil }
+
+      it "is retrieved with `#reload_from_database!`" do
+        @found.reload_from_database!
+        expect(@found.cover.url).to eq("/uploads/book/cover/#{@found.id}/ong.jpg")
+        expect(@found.cover.current_path).to eq(public_path("uploads/book/cover/#{@found.id}/ong.jpg"))
+      end
+    end
+
     context "with CarrierWave::MiniMagick" do
       it "has width and height" do
         book.cover = File.open(file_path("ong.jpg"))
@@ -73,9 +100,5 @@ describe CarrierWave::Neo4j do
         expect(book.cover.height).to eq 273
       end
     end
-
-    # TODO: look over the AR specs -
-    # https://github.com/carrierwaveuploader/carrierwave/blob/master/spec/orm/activerecord_spec.rb
   end
-
 end

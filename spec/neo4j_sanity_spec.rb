@@ -117,5 +117,21 @@ describe CarrierWave::Neo4j do
     describe "#destroy" do
     end
 
+    describe "#remote_image_url=" do
+      before do
+        stub_request(:get, "www.example.com/test.jpg").to_return(body: File.read(file_path("ong.jpg")))
+      end
+
+      it "marks image as changed when setting remote_image_url" do
+        expect(@user.image_changed?).to be_falsey
+        @user.remote_image_url = 'http://www.example.com/test.jpg'
+        expect(@user.image_changed?).to be_truthy
+        expect(File.exist?(public_path('uploads/test.jpg'))).to be_falsey
+        @user.save!
+        @user.reload
+        expect(File.exist?(public_path('uploads/test.jpg'))).to be_truthy
+        expect(@user.image_changed?).to be_falsey
+      end
+    end
   end
 end
