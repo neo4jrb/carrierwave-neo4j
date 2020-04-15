@@ -57,6 +57,15 @@ module CarrierWave
         RUBY
       end
 
+      def add_reload_callback(method)
+        @_reload_callbacks = [] unless @_reload_callbacks
+        @_reload_callbacks << method unless @_reload_callbacks.include?(method)
+      end
+
+      def reload_callbacks
+        @_reload_callbacks
+      end
+
     private
 
       def mount_base(column, uploader=nil, options={}, &block)
@@ -85,6 +94,8 @@ module CarrierWave
         after_update :"mark_remove_#{column}_false"
         after_destroy :"remove_#{column}!"
         after_find :"force_retrieve_#{column}"
+
+        add_reload_callback :"force_retrieve_#{column}"
 
         # TRYING THIS OUT FROM MONGOID:
         # TODO: copy the other mongoid adapter code over
@@ -143,10 +154,7 @@ module CarrierWave
           end
 
           def _force_uploaders_reload
-            puts "### in _force"
             @_mounters.each do |_, mounter|
-              puts "mounter:"
-              puts mounter.inspect
               mounter.send(:uploaders)
             end
           end
@@ -172,21 +180,15 @@ module CarrierWave
 
           def reload_from_database
             if reloaded = self.class.load_entity(neo_id)
-              uploader_cols = reloaded.attributes.map { |k,v| k if v.is_a?(::CarrierWave::Uploader::Base) }
-              uploader_cols.each do |c|
-                reloaded.__send__(:"force_retrieve_\#{c}")
-              end
+              self.class.reload_callbacks.each { |m| reloaded.send(m) }
             end
             reloaded
           end
 
           def reload_from_database!
             if reloaded = self.class.load_entity(neo_id)
-              uploader_cols = reloaded.attributes.map { |k,v| k if v.is_a?(::CarrierWave::Uploader::Base) }
-              send(:attributes=, reloaded.attributes) #.reject { |k,v| v.is_a?(::CarrierWave::Uploader::Base) })
-              uploader_cols.each do |c|
-                __send__(:"force_retrieve_\#{c}")
-              end
+              send(:attributes=, reloaded.attributes)
+              self.class.reload_callbacks.each { |m| send(m) }
             end
             self
           end
