@@ -88,6 +88,7 @@ module CarrierWave
 
         # TRYING THIS OUT FROM MONGOID:
         # TODO: copy the other mongoid adapter code over
+        # https://github.com/carrierwaveuploader/carrierwave-mongoid/blob/master/lib/carrierwave/mongoid.rb
         before_update :"store_previous_changes_for_#{column}"
         after_save :"remove_previously_stored_#{column}"
 

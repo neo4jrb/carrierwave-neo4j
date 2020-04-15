@@ -12,11 +12,7 @@ class User
   property :image, type: String
 end
 
-class DefaultUploader < CarrierWave::Uploader::Base
-  # def store_dir
-  #   "uploads/#{model.class.to_s.underscore}/#{mounted_as}/#{model.id}"
-  # end
-end
+class DefaultUploader < CarrierWave::Uploader::Base ; end
 
 class PngUploader < CarrierWave::Uploader::Base
   def extension_whitelist
@@ -98,6 +94,19 @@ describe CarrierWave::Neo4j do
   end
 
   describe "#save" do
+    context "when image= is assigned and the user is saved" do
+      let(:user) { user_class.new }
+
+      before do
+        user.image = File.open(file_path("ong.jpg"))
+        user.save
+      end
+
+      it "writes the file to disk" do
+        expect(File.exist?(public_path('uploads/ong.jpg'))).to be_truthy
+      end
+    end
+
     context "when remove_image? is true" do
       let(:user) { user_class.new }
 
@@ -165,6 +174,12 @@ describe CarrierWave::Neo4j do
       user.save
       expect(user.image.current_path).to eq public_path('uploads/neo4j.png')
       expect(user.image.url).to eq '/uploads/neo4j.png'
+    end
+
+    it "writes the updated file to disk" do
+      user.image = File.open(file_path("neo4j.png"))
+      user.save
+      expect(File.exist?(public_path('uploads/neo4j.png'))).to be_truthy
     end
   end
 

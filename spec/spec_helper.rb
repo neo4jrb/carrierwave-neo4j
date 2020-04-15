@@ -6,8 +6,8 @@ require "rspec/its"
 
 require "neo4j"
 require 'neo4j/core/cypher_session/adaptors/bolt'
-require 'dirty_cleaner'
-require 'neo4j_fake_migration'
+require 'helpers/dirty_cleaner'
+require 'helpers/fake_migrations'
 
 require "carrierwave"
 require "carrierwave/neo4j"
@@ -36,7 +36,7 @@ RSpec.configure do |config|
   config.before(:each) do
     cleaner.avoid_validation do 
       cleaner.clean
-      Neo4jFakeMigration.create.migrate(:up)
+      FakeMigrations.migrate(:up)
     end
   end
 
