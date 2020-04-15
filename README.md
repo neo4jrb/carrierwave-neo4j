@@ -7,7 +7,7 @@ This gem adds support for Neo4j 3.0+ (neo4j.rb 9.6.0+) to CarrierWave 2.1.0+, se
 Add to your Gemfile:
 
 ```ruby
-gem 'carrierwave-neo4j', require: 'carrierwave/neo4j'
+gem 'carrierwave-neo4j', '~> 3.0', require: 'carrierwave/neo4j'
 ```
 
 You can see example usage in `spec/neo4j_realistic_spec.rb` but in brief, you can use it like this:
