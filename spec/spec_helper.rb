@@ -6,7 +6,8 @@ require "rspec/its"
 
 require "neo4j"
 require "neo4j/core/cypher_session/adaptors/bolt"
-require "helpers/dirty_cleaner"
+require "helpers/database_cleaner"
+require "helpers/filesystem_cleaner"
 require "helpers/fake_migrations"
 
 require "carrierwave"
@@ -30,18 +31,16 @@ CarrierWave.root = public_path
 neo4j_adaptor = Neo4j::Core::CypherSession::Adaptors::Bolt.new('bolt://localhost:7003', {ssl: false})
 Neo4j::ActiveBase.on_establish_session { Neo4j::Core::CypherSession.new(neo4j_adaptor) }
 
-cleaner = DirtyCleaner.new
-
 RSpec.configure do |config|
   config.before(:each) do
-    cleaner.avoid_validation do 
-      cleaner.clean
+    DatabaseCleaner.avoid_validation do 
+      DatabaseCleaner.clean
+      FilesystemCleaner.clean
       FakeMigrations.migrate(:up)
     end
   end
 
   config.after(:each) do
-    cleaner.avoid_validation { cleaner.clean }
+    DatabaseCleaner.avoid_validation { DatabaseCleaner.clean }
   end
 end
-
