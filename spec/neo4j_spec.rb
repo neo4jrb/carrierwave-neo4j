@@ -199,4 +199,45 @@ describe CarrierWave::Neo4j do
       }.from(true).to(false)
     end
   end
+
+  describe "#reload_from_database" do
+    context "when used without mutation" do
+      before do
+        user.image = File.open(file_path("ong.jpg"))
+        user.save
+        @reloaded = user.reload_from_database
+      end
+
+      subject { @reloaded.image }
+
+      it "has an id and image identifier" do
+        expect(@reloaded.id).to eq user.id
+        expect(@reloaded.image_identifier).to eq "ong.jpg"
+      end
+
+      it { should be_an_instance_of DefaultUploader }
+      its(:url) { should == "/uploads/ong.jpg"}
+      its(:current_path) { should == public_path("uploads/ong.jpg") }
+    end
+  end
+
+  describe "#reload_from_database!" do
+    context "when used with mutation" do
+      before do
+        user.image = File.open(file_path("ong.jpg"))
+        user.save
+        user.reload_from_database!
+      end
+
+      subject { user.image }
+
+      it "has an image identifier" do
+        expect(user.image_identifier).to eq "ong.jpg"
+      end
+
+      it { should be_an_instance_of DefaultUploader }
+      its(:url) { should == "/uploads/ong.jpg"}
+      its(:current_path) { should == public_path("uploads/ong.jpg") }
+    end
+  end
 end

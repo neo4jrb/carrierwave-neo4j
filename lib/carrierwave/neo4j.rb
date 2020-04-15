@@ -172,7 +172,27 @@ module CarrierWave
 
           # TODO: do we need any of these?
           # def clear_#{column}
-          # def reload_from_database
+
+          def reload_from_database
+            if reloaded = self.class.load_entity(neo_id)
+              uploader_cols = reloaded.attributes.map { |k,v| k if v.is_a?(::CarrierWave::Uploader::Base) }
+              uploader_cols.each do |c|
+                reloaded.__send__(:"force_retrieve_\#{c}")
+              end
+            end
+            reloaded
+          end
+
+          def reload_from_database!
+            if reloaded = self.class.load_entity(neo_id)
+              uploader_cols = reloaded.attributes.map { |k,v| k if v.is_a?(::CarrierWave::Uploader::Base) }
+              send(:attributes=, reloaded.attributes) #.reject { |k,v| v.is_a?(::CarrierWave::Uploader::Base) })
+              uploader_cols.each do |c|
+                __send__(:"force_retrieve_\#{c}")
+              end
+            end
+            self
+          end
 
           # MONGOID:
           # CarrierWave 1.1 references ::ActiveRecord constant directly which
