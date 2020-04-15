@@ -170,9 +170,6 @@ module CarrierWave
             send(:attribute=, name.to_s, value)
           end
 
-          # TODO: do we need any of these?
-          # def clear_#{column}
-
           def reload_from_database
             if reloaded = self.class.load_entity(neo_id)
               uploader_cols = reloaded.attributes.map { |k,v| k if v.is_a?(::CarrierWave::Uploader::Base) }
