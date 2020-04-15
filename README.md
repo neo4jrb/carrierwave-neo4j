@@ -58,7 +58,7 @@ If you aren't getting your files back after querying a record from Neo4j, be awa
 
 ```ruby
 users = User.all
-users.each(&reload_from_database!)
+users.each(&:reload_from_database!)
 ```
 
 Sorry, this sucks. But this is a limitation of Neo4j.rb as these other finders don't fire any callbacks.
