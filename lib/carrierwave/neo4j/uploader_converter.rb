@@ -7,7 +7,11 @@ module CarrierWave::Neo4j
         end
 
         def to_db(value)
-          value.identifier
+          if value.is_a?(Array)
+            value.map(&:identifier)
+          else
+            value.identifier
+          end
         end
 
         def to_ruby(value)
