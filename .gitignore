@@ -7,4 +7,5 @@ db/*
 
 .ruby-version
 spec/public/uploads/*
+bin/
 
