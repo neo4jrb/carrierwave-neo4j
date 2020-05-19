@@ -103,9 +103,7 @@ module CarrierWave
         before_update :"store_previous_changes_for_#{column}"
         after_save :"remove_previously_stored_#{column}"
 
-        mod = Module.new
-        prepend mod
-        mod.class_eval <<-RUBY, __FILE__, __LINE__+1
+        class_eval <<-RUBY, __FILE__, __LINE__+1
 
           # def remote_#{column}_url=(url) is defined in 'mount_uploader'
 
@@ -210,4 +208,4 @@ module CarrierWave
   end
 end
 
-Neo4j::ActiveNode.send :include, CarrierWave::Neo4j
+Neo4j::ActiveNode.include CarrierWave::Neo4j
