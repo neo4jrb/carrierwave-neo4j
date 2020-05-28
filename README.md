@@ -47,6 +47,8 @@ brew install imagemagick
 
 ```sh
 bundle install
+rake neo4j:install[community-latest,test]
+rake neo4j:start[test]
 rake spec
 ```
 

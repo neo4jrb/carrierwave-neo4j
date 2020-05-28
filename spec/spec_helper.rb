@@ -29,7 +29,7 @@ end
 CarrierWave.root = public_path
 # DatabaseCleaner[:neo4j, connection: {type: :bolt, path: 'bolt://localhost:7006'}].strategy = :transaction
 
-neo4j_adaptor = Neo4j::Core::CypherSession::Adaptors::Bolt.new('bolt://localhost:7006', {ssl: false})
+neo4j_adaptor = Neo4j::Core::CypherSession::Adaptors::Bolt.new('bolt://localhost:7472', {ssl: false})
 Neo4j::ActiveBase.on_establish_session { Neo4j::Core::CypherSession.new(neo4j_adaptor) }
 
 RSpec.configure do |config|
