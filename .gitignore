@@ -6,3 +6,6 @@ db/*
 .idea
 
 .ruby-version
+spec/public/uploads/*
+bin/
+
