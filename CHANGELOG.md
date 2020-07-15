@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [3.0.0] - 2020-04-15
+## [3.0.0] - 2020-07-15
 
 ### Fixed
 
@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Updated the overall format of the plugin to mirror CarrierWave::Orm::ActiveRecord as much as possible
 - Files are now deleted correctly on `#destroy`
 - File information is now correctly reloaded on `#find`
+- Thanks @deobald for all the fixes.
 
 ## [2.0.4] - 2018-04-03
 
