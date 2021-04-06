@@ -1,7 +1,7 @@
 
-require "neo4j"
+require "active_graph"
 
-class FakeBookMigration < Neo4j::Migrations::Base
+class FakeBookMigration < ActiveGraph::Migrations::Base
 
   def self.create
     FakeBookMigration.new(:fake_book_migration)

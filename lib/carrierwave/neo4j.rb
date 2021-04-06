@@ -1,5 +1,5 @@
 require "carrierwave/neo4j/version"
-require "neo4j"
+require "active_graph"
 require "carrierwave"
 require "carrierwave/validations/active_model"
 require "carrierwave/neo4j/uploader_converter"
@@ -208,4 +208,4 @@ module CarrierWave
   end
 end
 
-Neo4j::ActiveNode.include CarrierWave::Neo4j
+ActiveGraph::Node.include CarrierWave::Neo4j

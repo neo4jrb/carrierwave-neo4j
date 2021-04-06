@@ -8,7 +8,7 @@ def reset_class(uploader = DefaultUploader)
 end
 
 class User
-  include Neo4j::ActiveNode
+  include ActiveGraph::Node
   property :image, type: String
 end
 

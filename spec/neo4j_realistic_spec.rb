@@ -19,7 +19,7 @@ class RealisticUploader < CarrierWave::Uploader::Base
 end
 
 class Book
-  include Neo4j::ActiveNode
+  include ActiveGraph::Node
   property :cover, type: String
   mount_uploader :cover, RealisticUploader
 end

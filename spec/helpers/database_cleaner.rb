@@ -1,8 +1,8 @@
 
-require "neo4j"
+require "active_graph"
 
 class DatabaseCleaner
-  include Neo4j::Migrations::Helpers
+  include ActiveGraph::Migrations::Helpers
 
   def self.clean
     DatabaseCleaner.new.clean_db
@@ -11,9 +11,9 @@ class DatabaseCleaner
   def self.avoid_validation
     # migrations and db cleanup have to happen outside of validations
     # or they never succeed
-    Neo4j::Migrations.currently_running_migrations = true
+    ActiveGraph::Migrations.currently_running_migrations = true
     yield
-    Neo4j::Migrations.currently_running_migrations = false
+    ActiveGraph::Migrations.currently_running_migrations = false
   end
 
   def clean_db

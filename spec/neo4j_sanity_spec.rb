@@ -12,7 +12,7 @@ def reset_class
   Object.send(:remove_const, "User") rescue nil
   Object.const_set("User", Class.new())
   User.class_eval do
-    include Neo4j::ActiveNode
+    include ActiveGraph::Node
     property :image, type: String
     mount_uploader :image, DefaultUploader
   end
@@ -119,6 +119,8 @@ describe CarrierWave::Neo4j do
 
     describe "#remote_image_url=" do
       before do
+        allow_any_instance_of(CarrierWave::Downloader::Base).to receive(:skip_ssrf_protection?).
+          and_return(true)
         stub_request(:get, "www.example.com/test.jpg").to_return(body: File.read(file_path("ong.jpg")))
       end
 

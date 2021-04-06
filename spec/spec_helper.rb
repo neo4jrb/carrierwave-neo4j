@@ -5,8 +5,7 @@ require "rspec"
 require "rspec/its"
 require "webmock/rspec"
 
-require "neo4j"
-require "neo4j/core/cypher_session/adaptors/bolt"
+require "active_graph"
 require "helpers/database_cleaner"
 require "helpers/filesystem_cleaner"
 require "helpers/fake_migrations"
@@ -29,8 +28,9 @@ end
 CarrierWave.root = public_path
 # DatabaseCleaner[:neo4j, connection: {type: :bolt, path: 'bolt://localhost:7006'}].strategy = :transaction
 
-neo4j_adaptor = Neo4j::Core::CypherSession::Adaptors::Bolt.new('bolt://localhost:7472', {ssl: false})
-Neo4j::ActiveBase.on_establish_session { Neo4j::Core::CypherSession.new(neo4j_adaptor) }
+server_url = ENV['NEO4J_URL'] || 'bolt://localhost:7472'
+ActiveGraph::Base.driver =
+    Neo4j::Driver::GraphDatabase.driver(server_url, Neo4j::Driver::AuthTokens.none, encryption: false)
 
 RSpec.configure do |config|
   config.before(:each) do

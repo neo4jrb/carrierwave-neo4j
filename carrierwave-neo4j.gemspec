@@ -17,8 +17,9 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
 
   s.add_dependency("activesupport", ">= 6.0" )
-  s.add_dependency("neo4j", "~> 9.6.0")
+  s.add_dependency("activegraph", ">= 10.0.0")
   s.add_dependency("carrierwave", ">= 2.1")
+  s.add_development_dependency("neo4j-ruby-driver")
   s.add_development_dependency("rspec", "~> 3.0")
   s.add_development_dependency("rspec-its")
   s.add_development_dependency("webmock")

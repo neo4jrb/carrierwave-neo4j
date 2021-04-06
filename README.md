@@ -22,7 +22,7 @@ class AttachmentUploader < CarrierWave::Uploader::Base
 end
 
 class Asset
-  include Neo4j::ActiveNode
+  include ActiveGraph::Node
 
   property :attachment, type: String
   mount_uploader :attachment, AttachmentUploader
@@ -47,7 +47,7 @@ brew install imagemagick
 
 ```sh
 bundle install
-rake neo4j:install[community-latest,test]
+rake neo4j:install[community-4.0.11,test]
 rake neo4j:start[test]
 rake spec
 ```

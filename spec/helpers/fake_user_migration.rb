@@ -1,7 +1,7 @@
 
-require "neo4j"
+require "active_graph"
 
-class FakeUserMigration < Neo4j::Migrations::Base
+class FakeUserMigration < ActiveGraph::Migrations::Base
 
   def self.create
     FakeUserMigration.new(:fake_user_migration)
