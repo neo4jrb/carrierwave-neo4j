@@ -85,7 +85,8 @@ module CarrierWave
         # but at init time, the value of the column is not yet available
         # so after init, the empty @uploaders cache must be invalidated
         # it will reinitialized with the processed column value on first access
-        after_initialize :_set_uploaders_nil
+        # TODO: This currently break things when initializing a model with #new and parameters. Do we need it?
+        #after_initialize :_set_uploaders_nil
 
         before_save :"write_#{column}_identifier"
         after_save :"store_#{column}!"
