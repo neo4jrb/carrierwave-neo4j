@@ -160,7 +160,7 @@ module CarrierWave
 
           # okay, this actually works:
           def force_retrieve_#{column}
-            send(:#{column}).send(:retrieve_from_store!, #{column}_identifier)
+            send(:#{column}).send(:retrieve_from_store!, #{column}_identifier) if #{column}_identifier
           end
 
           # these produce an infinite loop, so... don't reintroduce them:
