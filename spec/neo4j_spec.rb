@@ -15,7 +15,7 @@ end
 class DefaultUploader < CarrierWave::Uploader::Base ; end
 
 class PngUploader < CarrierWave::Uploader::Base
-  def extension_whitelist
+  def extension_allowlist
     %w(png)
   end
 end
