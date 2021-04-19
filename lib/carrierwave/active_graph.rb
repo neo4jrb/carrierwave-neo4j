@@ -1,8 +1,8 @@
-require "carrierwave/neo4j/version"
+require "carrierwave/active_graph/version"
 require "active_graph"
 require "carrierwave"
 require "carrierwave/validations/active_model"
-require "carrierwave/neo4j/uploader_converter"
+require "carrierwave/active_graph/uploader_converter"
 require "active_support/concern"
 
 ######
@@ -14,7 +14,7 @@ require "active_support/concern"
 # ...which is mixed into Model classes.
 ######
 module CarrierWave
-  module Neo4j
+  module ActiveGraph
 
     # this class methods junk is necessary because ActiveNode is implemented as
     # a model instead of a class for god-knows-what-reason.
@@ -209,4 +209,4 @@ module CarrierWave
   end
 end
 
-ActiveGraph::Node.include CarrierWave::Neo4j
+ActiveGraph::Node.include CarrierWave::ActiveGraph

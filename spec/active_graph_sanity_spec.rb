@@ -19,7 +19,7 @@ def reset_class
   User
 end
 
-describe CarrierWave::Neo4j do
+describe CarrierWave::ActiveGraph do
   before do
     reset_class
     @user = User.new
@@ -107,7 +107,6 @@ describe CarrierWave::Neo4j do
 
         # ActiveRecord would respect `update_column`
         User.find(@user.id).update_column(:image, nil)
-
         expect(@user.reload.image).to be_present
         other = User.find(@user.id)
         expect(other.image).to be_present 

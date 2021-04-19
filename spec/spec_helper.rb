@@ -11,7 +11,7 @@ require "helpers/filesystem_cleaner"
 require "helpers/fake_migrations"
 
 require "carrierwave"
-require "carrierwave/neo4j"
+require "carrierwave/active_graph"
 
 def file_path(*paths)
   File.expand_path(File.join(File.dirname(__FILE__), "fixtures", *paths))

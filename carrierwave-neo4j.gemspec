@@ -1,10 +1,10 @@
 # -*- encoding: utf-8 -*-
 $:.push File.expand_path("../lib", __FILE__)
-require "carrierwave/neo4j/version"
+require "carrierwave/active_graph/version"
 
 Gem::Specification.new do |s|
-  s.name        = "carrierwave-neo4j"
-  s.version     = CarrierWave::Neo4j::VERSION
+  s.name        = "carrierwave-activegraph"
+  s.version     = CarrierWave::ActiveGraph::VERSION
   s.authors     = ["Rodrigo Navarro"]
   s.email       = ["navarro@manapot.com.br"]
   s.homepage    = "https://github.com/neo4jrb/carrierwave-neo4j"

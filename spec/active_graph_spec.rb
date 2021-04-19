@@ -34,7 +34,7 @@ class DownloadErrorUploader < CarrierWave::Uploader::Base
   end
 end
 
-describe CarrierWave::Neo4j do
+describe CarrierWave::ActiveGraph do
   let(:user_class)          { reset_class }
   let(:user_class_png)      { reset_class(PngUploader) }
   let(:user_class_error)    { reset_class(ProcessingErrorUploader) }

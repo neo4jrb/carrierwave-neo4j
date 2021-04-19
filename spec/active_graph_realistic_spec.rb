@@ -24,7 +24,7 @@ class Book
   mount_uploader :cover, RealisticUploader
 end
 
-describe CarrierWave::Neo4j do
+describe CarrierWave::ActiveGraph do
   after do
     Book.destroy_all
   end
