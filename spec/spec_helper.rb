@@ -28,7 +28,7 @@ end
 CarrierWave.root = public_path
 # DatabaseCleaner[:neo4j, connection: {type: :bolt, path: 'bolt://localhost:7006'}].strategy = :transaction
 
-server_url = ENV['NEO4J_URL'] || 'bolt://localhost:7472'
+server_url = ENV['NEO4J_URL'] || 'bolt://localhost:7687'
 ActiveGraph::Base.driver =
     Neo4j::Driver::GraphDatabase.driver(server_url, Neo4j::Driver::AuthTokens.none, encryption: false)
 
