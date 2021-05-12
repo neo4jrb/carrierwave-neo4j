@@ -1,5 +1,5 @@
 module CarrierWave
-  module Neo4j
+  module ActiveGraph
     VERSION = '3.0.0'
   end
 end

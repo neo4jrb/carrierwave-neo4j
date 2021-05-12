@@ -8,14 +8,14 @@ def reset_class(uploader = DefaultUploader)
 end
 
 class User
-  include Neo4j::ActiveNode
+  include ActiveGraph::Node
   property :image, type: String
 end
 
 class DefaultUploader < CarrierWave::Uploader::Base ; end
 
 class PngUploader < CarrierWave::Uploader::Base
-  def extension_whitelist
+  def extension_allowlist
     %w(png)
   end
 end
@@ -34,7 +34,7 @@ class DownloadErrorUploader < CarrierWave::Uploader::Base
   end
 end
 
-describe CarrierWave::Neo4j do
+describe CarrierWave::ActiveGraph do
   let(:user_class)          { reset_class }
   let(:user_class_png)      { reset_class(PngUploader) }
   let(:user_class_error)    { reset_class(ProcessingErrorUploader) }

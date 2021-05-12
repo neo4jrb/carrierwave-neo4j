@@ -1,5 +1,5 @@
 
-require "neo4j"
+require "active_graph"
 
 class FilesystemCleaner
   def self.clean

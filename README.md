@@ -1,4 +1,4 @@
-## CarrierWave for Neo4j
+## CarrierWave for ActiveGraph
 
 This gem adds support for Neo4j 3.0+ (neo4j.rb 9.6.0+) to CarrierWave 2.1.0+, see the CarrierWave documentation for more detailed usage instructions.
 
@@ -7,10 +7,10 @@ This gem adds support for Neo4j 3.0+ (neo4j.rb 9.6.0+) to CarrierWave 2.1.0+, se
 Add to your Gemfile:
 
 ```ruby
-gem 'carrierwave-neo4j', '~> 3.0', require: 'carrierwave/neo4j'
+gem 'carrierwave-neo4j', '~> 3.0', require: 'carrierwave/active_graph'
 ```
 
-You can see example usage in `spec/neo4j_realistic_spec.rb` but in brief, you can use it like this:
+You can see example usage in `spec/active_graph_realistic_spec.rb` but in brief, you can use it like this:
 
 ```ruby
 class AttachmentUploader < CarrierWave::Uploader::Base
@@ -22,7 +22,7 @@ class AttachmentUploader < CarrierWave::Uploader::Base
 end
 
 class Asset
-  include Neo4j::ActiveNode
+  include ActiveGraph::Node
 
   property :attachment, type: String
   mount_uploader :attachment, AttachmentUploader
@@ -47,7 +47,7 @@ brew install imagemagick
 
 ```sh
 bundle install
-rake neo4j:install[community-latest,test]
+rake neo4j:install[community-4.0.11,test]
 rake neo4j:start[test]
 rake spec
 ```

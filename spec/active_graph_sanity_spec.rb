@@ -12,14 +12,14 @@ def reset_class
   Object.send(:remove_const, "User") rescue nil
   Object.const_set("User", Class.new())
   User.class_eval do
-    include Neo4j::ActiveNode
+    include ActiveGraph::Node
     property :image, type: String
     mount_uploader :image, DefaultUploader
   end
   User
 end
 
-describe CarrierWave::Neo4j do
+describe CarrierWave::ActiveGraph do
   before do
     reset_class
     @user = User.new
@@ -68,6 +68,18 @@ describe CarrierWave::Neo4j do
     end
 
     describe "#image" do
+      it "should return blank uploader when nothing has been assigned" do
+        expect(@user.image).to be_blank
+      end
+
+      it "should return blank uploader when an blank uploader has been assigned" do
+        @user[:image] = DefaultUploader.new
+        @user.save!
+        @user.reload
+        other = User.find(@user.id)
+        expect(@user.image).to be_blank
+        expect(other.image).to be_blank
+      end
     end
 
     describe "#save" do
@@ -85,6 +97,30 @@ describe CarrierWave::Neo4j do
         expect(@user[:image].identifier).to eq('ong.jpg')
         expect(@user.image_identifier).to eq('ong.jpg')
       end
+
+      it "should assign the filename to the database even if uploader was previous nil" do
+        expect(@user.save).to be_truthy
+        expect(@user.image).to be_blank
+        image = File.open(file_path("ong.jpg"))
+        expect(@user.update(image: image)).to be_truthy
+        @user.reload
+        expect(@user[:image]).not_to eq('ong.jpg')
+        expect(@user[:image].identifier).to eq('ong.jpg')
+        expect(@user.image_identifier).to eq('ong.jpg')
+      end
+
+      it "should assign the filename to the database when using #new even if uploader was previous nil" do
+        expect(@user.save).to be_truthy
+        expect(@user.image).to be_blank
+        image = File.open(file_path("ong.jpg"))
+        user = User.new(image: image)
+        expect(user.save).to be_truthy
+        user.reload
+        expect(user[:image]).not_to eq('ong.jpg')
+        expect(user[:image].identifier).to eq('ong.jpg')
+        expect(user.image_identifier).to eq('ong.jpg')
+      end
+
     end
 
     describe "#update" do
@@ -101,16 +137,15 @@ describe CarrierWave::Neo4j do
         expect(@user.reload.image).to be_blank
       end
 
-      it "does not respect `update_column`" do
+      it "does respect `update_column` only after find" do
         @user.image = File.open(file_path("ong.jpg"))
         @user.save!
 
         # ActiveRecord would respect `update_column`
         User.find(@user.id).update_column(:image, nil)
-
         expect(@user.reload.image).to be_present
         other = User.find(@user.id)
-        expect(other.image).to be_present 
+        expect(other.image).to be_blank
       end
     end
 
@@ -119,6 +154,8 @@ describe CarrierWave::Neo4j do
 
     describe "#remote_image_url=" do
       before do
+        allow_any_instance_of(CarrierWave::Downloader::Base).to receive(:skip_ssrf_protection?).
+          and_return(true)
         stub_request(:get, "www.example.com/test.jpg").to_return(body: File.read(file_path("ong.jpg")))
       end
 

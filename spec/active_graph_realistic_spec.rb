@@ -13,18 +13,18 @@ class RealisticUploader < CarrierWave::Uploader::Base
     "uploads/#{model.class.to_s.underscore}/#{mounted_as}/#{model.id}"
   end
 
-  def extension_whitelist
+  def extension_allowlist
     %w(jpg jpeg gif png)
   end
 end
 
 class Book
-  include Neo4j::ActiveNode
+  include ActiveGraph::Node
   property :cover, type: String
   mount_uploader :cover, RealisticUploader
 end
 
-describe CarrierWave::Neo4j do
+describe CarrierWave::ActiveGraph do
   after do
     Book.destroy_all
   end

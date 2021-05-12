@@ -1,8 +1,8 @@
-require "carrierwave/neo4j/version"
-require "neo4j"
+require "carrierwave/active_graph/version"
+require "active_graph"
 require "carrierwave"
 require "carrierwave/validations/active_model"
-require "carrierwave/neo4j/uploader_converter"
+require "carrierwave/active_graph/uploader_converter"
 require "active_support/concern"
 
 ######
@@ -14,7 +14,7 @@ require "active_support/concern"
 # ...which is mixed into Model classes.
 ######
 module CarrierWave
-  module Neo4j
+  module ActiveGraph
 
     # this class methods junk is necessary because ActiveNode is implemented as
     # a model instead of a class for god-knows-what-reason.
@@ -85,7 +85,8 @@ module CarrierWave
         # but at init time, the value of the column is not yet available
         # so after init, the empty @uploaders cache must be invalidated
         # it will reinitialized with the processed column value on first access
-        after_initialize :_set_uploaders_nil
+        # TODO: This currently break things when initializing a model with #new and parameters. Do we need it?
+        #after_initialize :_set_uploaders_nil
 
         before_save :"write_#{column}_identifier"
         after_save :"store_#{column}!"
@@ -159,7 +160,7 @@ module CarrierWave
 
           # okay, this actually works:
           def force_retrieve_#{column}
-            send(:#{column}).send(:retrieve_from_store!, #{column}_identifier)
+            send(:#{column}).send(:retrieve_from_store!, #{column}_identifier) if #{column}_identifier
           end
 
           # these produce an infinite loop, so... don't reintroduce them:
@@ -208,4 +209,4 @@ module CarrierWave
   end
 end
 
-Neo4j::ActiveNode.include CarrierWave::Neo4j
+ActiveGraph::Node.include CarrierWave::ActiveGraph
